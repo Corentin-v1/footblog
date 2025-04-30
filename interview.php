@@ -53,6 +53,39 @@ if (is_logged_in() && isset($_GET['delete']) && isset($articles[intval($_GET['de
 if (is_logged_in() && isset($_GET['edit']) && isset($articles[intval($_GET['edit'])])) {
     $edit_article = $articles[intval($_GET['edit'])];
 }
+if (is_logged_in() && isset($_POST['edit_article'])) {
+    $idx = intval($_POST['edit_article']);
+    $title = trim($_POST['title'] ?? '');
+    $content = trim($_POST['content'] ?? '');
+    $image_name = $articles[$idx]['image'] ?? '';
+    $date = $articles[$idx]['date'] ?? date('Y-m-d H:i:s');
+    if (isset($articles[$idx]) && $title && $content) {
+        if (!empty($_FILES['image']['name'])) {
+            if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
+            $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+            $allowed = ['jpg','jpeg','png','gif','webp'];
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $_FILES['image']['tmp_name']);
+            finfo_close($finfo);
+            $allowed_mimes = ['image/jpeg','image/png','image/gif','image/webp'];
+            if (in_array($ext, $allowed) && in_array($mime, $allowed_mimes)) {
+                if (!empty($image_name) && file_exists($upload_dir . $image_name)) {
+                    unlink($upload_dir . $image_name);
+                }
+                $image_name = uniqid('img_') . '.' . $ext;
+                move_uploaded_file($_FILES['image']['tmp_name'], $upload_dir . $image_name);
+            }
+        }
+        $articles[$idx] = ['title' => $title, 'content' => base64_encode($content), 'image' => $image_name, 'date' => $date];
+        $lines = [];
+        foreach ($articles as $a) {
+            $lines[] = $a['title'] . '|' . $a['content'] . '|' . ($a['image'] ?? '') . '|' . ($a['date'] ?? '');
+        }
+        file_put_contents($articles_file, implode(PHP_EOL, $lines) . PHP_EOL);
+        header('Location: interview.php');
+        exit;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -83,21 +116,18 @@ if (is_logged_in() && isset($_GET['edit']) && isset($articles[intval($_GET['edit
             $show_content = (isset($_GET['show']) && $_GET['show'] === $a['date']);
             $article_id = 'article_' . md5($a['date']);
           ?>
-          <article id="<?php echo $article_id; ?>" class="toggle-article" style="background:#fff;padding:30px;margin-bottom:30px;box-shadow:0 4px 12px rgba(0,0,0,0.13);border-radius:10px;cursor:pointer;" onclick="toggleContent(this)">
-            <h3 style="font-size:2em;margin-bottom:18px;"><?php echo htmlspecialchars($a['title']); ?></h3>
-            <?php if (!empty($a['image']) && file_exists($upload_dir . $a['image'])): ?>
-              <img src="<?php echo $upload_dir . htmlspecialchars($a['image']); ?>" alt="Photo" style="max-width:600px;max-height:400px;display:block;margin-bottom:18px;">
-            <?php endif; ?>
-            <?php if (!empty($a['date'])): ?>
-              <div style="color:#888;font-size:0.95em;margin-bottom:10px;">Publié le <?php echo date('d/m/Y H:i', strtotime($a['date'])); ?></div>
-            <?php endif; ?>
-            <div class="article-content" style="display:<?php echo $show_content ? 'block' : 'none'; ?>;font-size:1.3em;line-height:1.7;margin-top:10px;">
-              <?php echo nl2br(htmlspecialchars($a['content'])); ?>
-            </div>
-            <?php if (is_logged_in()): ?>
-              <a href="interview.php?edit=<?php echo $i; ?>" style="font-size:1.1em;">Éditer</a>
-              <a href="interview.php?delete=<?php echo $i; ?>" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');" style="margin-left:18px;font-size:1.1em;">Supprimer</a>
-            <?php endif; ?>
+          <article id="<?php echo $article_id; ?>" class="toggle-article" style="background:#fff;padding:30px;margin-bottom:30px;box-shadow:0 4px 12px rgba(0,0,0,0.13);border-radius:10px;">
+            <form method="post" enctype="multipart/form-data">
+              <input type="hidden" name="edit_article" value="<?php echo $i; ?>">
+              <input type="text" name="title" value="<?php echo htmlspecialchars($a['title']); ?>" style="width:100%;padding:8px;margin-bottom:10px;font-size:1.5em;">
+              <?php if (!empty($a['image']) && file_exists($upload_dir . $a['image'])): ?>
+                <img src="<?php echo $upload_dir . htmlspecialchars($a['image']); ?>" alt="Photo" style="max-width:600px;max-height:400px;display:block;margin-bottom:10px;">
+              <?php endif; ?>
+              <input type="file" name="image" accept="image/*" style="margin-bottom:10px;">
+              <textarea name="content" style="width:100%;padding:8px;margin-bottom:10px;font-size:1.2em;"><?php echo htmlspecialchars($a['content']); ?></textarea>
+              <button type="submit" style="padding:8px 16px;">Enregistrer</button>
+              <a href="interview.php" style="margin-left:10px;">Annuler</a>
+            </form>
           </article>
         <?php endforeach; ?>
       </section>
@@ -126,3 +156,14 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 <?php endif; ?>
 </script>
+
+
+
+
+
+
+
+
+
+
+bite
