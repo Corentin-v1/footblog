@@ -135,4 +135,3 @@ if (is_logged_in() && isset($_GET['edit'])) {
     </main>
   </div>
 </body>
-</html>
