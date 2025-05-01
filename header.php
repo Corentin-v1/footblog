@@ -4,9 +4,9 @@ include_once 'session.php';
 <header style="width:100%;display:flex;justify-content:flex-end;align-items:center;padding:10px 20px;box-sizing:border-box;">
     <?php if (is_logged_in()): ?>
         <span style="margin-right:10px;">Connecté : <?php echo htmlspecialchars($_SESSION['user']); ?></span>
-        <a href="logout.php" style="padding:8px 16px;background:#007BFF;color:#fff;text-decoration:none;border-radius:4px;">Déconnexion</a>
+        <a href="logout.php?redirect=<?php echo urlencode($_SERVER['REQUEST_URI'] . (isset($_SERVER['QUERY_STRING']) && $_SERVER['QUERY_STRING'] ? '?' . $_SERVER['QUERY_STRING'] : '')); ?>" style="padding:8px 16px;background:#007BFF;color:#fff;text-decoration:none;border-radius:4px;">Déconnexion</a>
     <?php else: ?>
-        <a href="login.php" style="padding:8px 16px;background:#007BFF;color:#fff;text-decoration:none;border-radius:4px;">Connexion</a>
+        <a href="login.php?redirect=<?php echo urlencode($_SERVER['REQUEST_URI'] . '?' . $_SERVER['QUERY_STRING']); ?>" style="padding:8px 16px;background:#007BFF;color:#fff;text-decoration:none;border-radius:4px;">Connexion</a>
     <?php endif; ?>
     <button id="darkModeBtn" style="margin-left:14px;padding:8px 16px;background:#222;color:#fff;border:none;border-radius:4px;cursor:pointer;">🌙</button>
 </header>

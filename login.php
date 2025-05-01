@@ -33,7 +33,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if ($valid) {
         $_SESSION['user'] = $user;
-        header('Location: index.php');
+        $redirect_url = $_POST['redirect'] ?? $_SESSION['redirect_after_login'] ?? 'index.php';
+        unset($_SESSION['redirect_after_login']);
+        header("Location: $redirect_url");
         exit;
     } else {
         $err = "Identifiants invalides.";
@@ -56,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div style="color:red;margin-bottom:10px;"><?php echo $err; ?></div>
         <?php endif; ?>
         <form method="post">
+            <input type="hidden" name="redirect" value="<?php echo htmlspecialchars($_GET['redirect'] ?? $_SESSION['redirect_after_login'] ?? ''); ?>">
             <label>Nom d'utilisateur<br>
                 <input type="text" name="username" required style="width:100%;padding:8px;margin-bottom:10px;">
             </label><br>
@@ -65,5 +68,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit" style="padding:8px 16px;background:#007BFF;color:#fff;border:none;border-radius:4px;">Se connecter</button>
         </form>
     </div>
-</body>
+    </body>
 </html>
