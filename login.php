@@ -50,23 +50,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Connexion</title>
     <link rel="stylesheet" href="style.php">
 </head>
-<body>
+<body style="display:flex;justify-content:center;align-items:center;height:100vh;margin:0;background:linear-gradient(135deg, #4158d0, rgb(204, 181, 202));">
     <?php include 'header.php'; ?>
-    <div style="max-width:400px;margin:60px auto;padding:30px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.1);border-radius:8px;">
-        <h2>Connexion</h2>
+    <?php include 'sidebar.php'; ?>
+    <div style="width:100%;max-width:400px;padding:30px;background:rgba(255, 255, 255, 0.2);box-shadow:0 8px 32px rgba(0, 0, 0, 0.37);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:16px;border:1px solid rgba(255, 255, 255, 0.18);">
+        <h2 style="color:#fff;text-align:center;">Connexion</h2>
         <?php if ($err): ?>
-            <div style="color:red;margin-bottom:10px;"><?php echo $err; ?></div>
+            <div style="color:#ff6b6b;margin-bottom:10px;text-align:center;"><?php echo $err; ?></div>
         <?php endif; ?>
         <form method="post">
             <input type="hidden" name="redirect" value="<?php echo htmlspecialchars($_GET['redirect'] ?? $_SESSION['redirect_after_login'] ?? ''); ?>">
-            <label>Nom d'utilisateur<br>
-                <input type="text" name="username" required style="width:100%;padding:8px;margin-bottom:10px;">
+            <label style="color:#fff;">Nom d'utilisateur<br>
+                <input type="text" name="username" required style="width:100%;padding:8px;margin-bottom:10px;border:none;border-radius:8px;background:rgba(255, 255, 255, 0.3);color:#fff;">
             </label><br>
-            <label>Mot de passe<br>
-                <input type="password" name="password" required style="width:100%;padding:8px;margin-bottom:10px;">
+            <label style="color:#fff;">Mot de passe<br>
+                <input type="password" name="password" required style="width:100%;padding:8px;margin-bottom:10px;border:none;border-radius:8px;background:rgba(255, 255, 255, 0.3);color:#fff;">
             </label><br>
-            <button type="submit" style="padding:8px 16px;background:#007BFF;color:#fff;border:none;border-radius:4px;">Se connecter</button>
+            <button type="submit" style="padding:10px 20px;background:rgba(255, 255, 255, 0.3);color:#fff;border:none;border-radius:8px;cursor:pointer;">Se connecter</button>
         </form>
     </div>
-    </body>
+</body>
 </html>

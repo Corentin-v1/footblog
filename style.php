@@ -49,14 +49,13 @@ a:hover, a:focus {
 }
 
 .sidebar nav ul li a {
-    color: white;
+    color: #000; /* Black in light mode */
     text-decoration: none;
     transition: 0.3s;
     font-weight: bold;
     font-size: 1.08em;
     font-family: Arial, sans-serif;
     letter-spacing: 0.01em;
-    /* Ajouté pour uniformiser */
     text-shadow: 0 1px 2px rgba(0,0,0,0.10);
 }
 .sidebar nav ul li a:hover,
@@ -66,7 +65,7 @@ a:hover, a:focus {
 }
 
 .sidebar-social-link {
-    color: white;
+    color: #000; /* Black in light mode */
     text-decoration: none;
     transition: 0.3s;
     font-weight: bold;
@@ -185,9 +184,31 @@ article:hover {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
+/* Articles - Fond blanc en mode normal et noir en mode sombre */
+article {
+    background: #fff !important; /* Force white background for light mode */
+    color: #222; /* Ensure text color is readable */
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.13);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+}
+article h3, article h4, article small, article p {
+    color: #222;
+}
+article img {
+    max-width: 600px;
+    max-height: 400px;
+    display: block;
+    margin-bottom: 10px;
+    filter: brightness(1) contrast(1);
+}
+
 h1, h2, h3, h4, h5, h6 {
     font-family: Arial, sans-serif;
-    color: #1a1a1a;
+    color: #000; /* Black in light mode */
     font-weight: bold;
     letter-spacing: 0.01em;
 }
@@ -195,6 +216,10 @@ h1, h2, h3, h4, h5, h6 {
 textarea, input, select, button {
     font-family: Arial, sans-serif;
     font-size: 1em;
+}
+
+.article-content {
+    display: none; /* Masquer le contenu par défaut */
 }
 
 @media (max-width: 900px) {
@@ -300,15 +325,26 @@ body.dark-mode {
     background: #181a1b !important;
     color: #e0e0e0 !important;
 }
+body.dark-mode h1, 
+body.dark-mode h2, 
+body.dark-mode h3, 
+body.dark-mode h4, 
+body.dark-mode h5, 
+body.dark-mode h6 {
+    color: #fff !important; /* White in dark mode */
+}
 body.dark-mode header,
 body.dark-mode header a,
 body.dark-mode header span {
-    background: #23272b !important;
+    background: #6a0dad !important; /* violet */
     color: #e0e0e0 !important;
 }
 body.dark-mode .sidebar {
-    background: #23272b !important;
-    color: #e0e0e0 !important;
+    background: rgba(35, 39, 43, 0.2) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.18) !important;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.25) !important;
 }
 body.dark-mode .sidebar nav ul li a,
 body.dark-mode .sidebar-social-link {
@@ -345,7 +381,7 @@ body.dark-mode .sidebar-social-link:hover {
 }
 body.dark-mode .main-article,
 body.dark-mode .other-articles article {
-    background: #23272b !important;
+    background:rgb(0, 0, 0) !important;
     color: #e0e0e0 !important;
     box-shadow: 0 2px 8px rgba(0,0,0,0.25);
 }
@@ -354,4 +390,44 @@ body.dark-mode .sidebar {
 }
 body.dark-mode img {
     filter: brightness(0.93) contrast(1.08);
+}
+
+/* Mode sombre pour les articles */
+body.dark-mode article {
+    background: black; /* Dark mode */
+    color: #fff;
+}
+body.dark-mode article h3, 
+body.dark-mode article h4, 
+body.dark-mode article small, 
+body.dark-mode article p {
+    color: #fff;
+}
+body.dark-mode article img {
+    filter: brightness(0.9) contrast(1.1);
+}
+
+body.dark-mode .other-articles .article {
+    background: #000 !important; /* Black background for articles in dark mode */
+    color: #e0e0e0 !important; /* Light text for readability */
+}
+
+/* Dark mode styles */
+body.dark-mode {
+    background: linear-gradient(135deg, #6a0dad, #000000) !important; /* Violet to black gradient */
+    color: #e0e0e0;
+}
+body.dark-mode input {
+    background: rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+body.dark-mode button {
+    background: rgba(255, 255, 255, 0.3);
+    color: #e0e0e0;
+}
+body.dark-mode h2 {
+    color: #e0e0e0;
+}
+body.dark-mode .sidebar nav ul li a {
+    color: #fff !important; /* White in dark mode */
 }

@@ -3,7 +3,7 @@
 <button id="openSidebarBtn" style="position:fixed;top:10px;left:16px;z-index:1200;padding:10px 14px;background:#007BFF;color:#fff;border:none;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.13);">
   ☰
 </button>
-<aside class="sidebar" id="sidebar" style="transform:translateX(-220px);transition:transform 0.3s;">
+<aside class="sidebar" id="sidebar" style="transform:translateX(-220px);transition:transform 0.3s;background:rgba(255, 255, 255, 0.2);box-shadow:0 8px 32px rgba(0, 0, 0, 0.37);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-right:1px solid rgba(255, 255, 255, 0.18);">
   <button id="closeSidebarBtn" style="position:absolute;top:12px;right:12px;background:none;border:none;color:#fff;font-size:1.7em;cursor:pointer;">×</button>
   <nav>
     <ul style="padding:0;margin:0;">

@@ -16,9 +16,11 @@ include_once 'session.php';
         if (on) {
             document.body.classList.add('dark-mode');
             localStorage.setItem('darkMode', '1');
+            document.getElementById('darkModeBtn').textContent = '☀️'; // Sun icon
         } else {
             document.body.classList.remove('dark-mode');
             localStorage.setItem('darkMode', '0');
+            document.getElementById('darkModeBtn').textContent = '🌙'; // Moon icon
         }
     }
     document.getElementById('darkModeBtn').onclick = function() {
@@ -27,6 +29,7 @@ include_once 'session.php';
     // Initialisation au chargement
     if (localStorage.getItem('darkMode') === '1') {
         document.body.classList.add('dark-mode');
+        document.getElementById('darkModeBtn').textContent = '☀️'; // Sun icon
     }
 })();
 </script>

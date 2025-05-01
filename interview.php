@@ -116,13 +116,13 @@ if (is_logged_in() && isset($_POST['edit_article'])) {
             $show_content = (isset($_GET['show']) && $_GET['show'] === $a['date']);
             $article_id = 'article_' . md5($a['date']);
           ?>
-          <article id="<?php echo $article_id; ?>" class="toggle-article" onclick="toggleContent(this)" style="background:#fff;padding:30px;margin-bottom:30px;box-shadow:0 4px 12px rgba(0,0,0,0.13);border-radius:10px;cursor:pointer;">
+          <article id="<?php echo $article_id; ?>" class="toggle-article" onclick="toggleContent(this)">
             <h3><?php echo htmlspecialchars($a['title']); ?></h3>
             <?php if (!empty($a['image']) && file_exists($upload_dir . $a['image'])): ?>
-              <img src="<?php echo $upload_dir . htmlspecialchars($a['image']); ?>" alt="Photo" style="max-width:600px;max-height:400px;display:block;margin-bottom:10px;">
+              <img src="<?php echo $upload_dir . htmlspecialchars($a['image']); ?>" alt="Photo">
             <?php endif; ?>
-            <small style="color:#888;display:block;margin-bottom:10px;">Publié le : <?php echo htmlspecialchars($a['date']); ?></small>
-            <div class="article-content" style="display:<?php echo $show_content ? 'block' : 'none'; ?>;">
+            <small>Publié le : <?php echo htmlspecialchars($a['date']); ?></small>
+            <div class="article-content">
               <p><?php echo nl2br(htmlspecialchars(base64_decode($a['content']))); ?></p>
             </div>
           </article>

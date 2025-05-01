@@ -55,7 +55,7 @@ if (is_logged_in() && isset($_GET['edit'])) {
   <title>Articles Sportifs</title>
   <link rel="stylesheet" href="style.php">
 </head>
-<body>
+<body class="<?php echo (isset($_COOKIE['darkMode']) && $_COOKIE['darkMode'] === '1') ? 'dark-mode' : ''; ?>">
   <?php include 'header.php'; ?>
   <div class="container">
     <?php include 'sidebar.php'; ?>
@@ -94,13 +94,13 @@ if (is_logged_in() && isset($_GET['edit'])) {
                 $main_link = get_article_page($main_article['source_file']) . '?show=' . urlencode($main_article['date']);
               ?>
               <a href="<?php echo $main_link; ?>" style="text-decoration:none;color:inherit;">
-              <div style="background:#fff;padding:32px 32px 24px 32px;margin-bottom:36px;box-shadow:0 4px 16px rgba(0,0,0,0.13);border-radius:14px;text-align:left;cursor:pointer;width:100%;margin-left:0;">
+              <div class="article" style="background:#fff;color:#222;padding:32px 32px 24px 32px;margin-bottom:36px;box-shadow:0 4px 16px rgba(0,0,0,0.13);border-radius:14px;text-align:left;cursor:pointer;width:100%;margin-left:0;">
                 <?php if (!empty($main_article['image']) && file_exists($upload_dir . $main_article['image'])): ?>
-                  <img src="<?php echo $upload_dir . htmlspecialchars($main_article['image']); ?>" alt="Photo" style="width:100%;max-width:700px;max-height:420px;display:block;margin-bottom:22px;border-radius:10px;">
+                  <img src="<?php echo $upload_dir . htmlspecialchars($main_article['image']); ?>" alt="Photo" style="width:100%;max-width:700px;max-height:420px;display:block;margin-bottom:22px;border-radius:10px;filter: brightness(1) contrast(1);">
                 <?php endif; ?>
                 <h3 style="font-size:2.1em;margin-bottom:10px;"><?php echo htmlspecialchars($main_article['title']); ?></h3>
                 <?php if (!empty($main_article['date'])): ?>
-                  <div style="color:#888;font-size:1.1em;margin-bottom:0;">Publié le <?php echo date('d/m/Y H:i', strtotime($main_article['date'])); ?></div>
+                  <div style="font-size:1.1em;margin-bottom:0;">Publié le <?php echo date('d/m/Y H:i', strtotime($main_article['date'])); ?></div>
                 <?php endif; ?>
               </div>
               </a>
@@ -113,13 +113,13 @@ if (is_logged_in() && isset($_GET['edit'])) {
                     $alink = get_article_page($a['source_file']) . '?show=' . urlencode($a['date']);
                   ?>
                   <a href="<?php echo $alink; ?>" style="text-decoration:none;color:inherit;">
-                  <div style="background:#fff;padding:18px 18px 12px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.10);border-radius:10px;max-width:320px;width:100%;text-align:left;cursor:pointer;min-height:220px;margin-bottom:0;">
+                  <div class="article" style="background:#fff;color:#222;padding:18px 18px 12px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.10);border-radius:10px;max-width:320px;width:100%;text-align:left;cursor:pointer;min-height:220px;margin-bottom:0;">
                     <?php if (!empty($a['image']) && file_exists($upload_dir . $a['image'])): ?>
-                      <img src="<?php echo $upload_dir . htmlspecialchars($a['image']); ?>" alt="Photo" style="width:100%;max-width:280px;max-height:160px;display:block;margin-bottom:12px;border-radius:7px;">
+                      <img src="<?php echo $upload_dir . htmlspecialchars($a['image']); ?>" alt="Photo" style="width:100%;max-width:280px;max-height:160px;display:block;margin-bottom:12px;border-radius:7px;filter: brightness(1) contrast(1);">
                     <?php endif; ?>
                     <h4 style="font-size:1.25em;margin-bottom:8px;"><?php echo htmlspecialchars($a['title']); ?></h4>
                     <?php if (!empty($a['date'])): ?>
-                      <div style="color:#888;font-size:0.98em;">Publié le <?php echo date('d/m/Y H:i', strtotime($a['date'])); ?></div>
+                      <div style="font-size:0.98em;">Publié le <?php echo date('d/m/Y H:i', strtotime($a['date'])); ?></div>
                     <?php endif; ?>
                   </div>
                   </a>
@@ -135,3 +135,4 @@ if (is_logged_in() && isset($_GET['edit'])) {
     </main>
   </div>
 </body>
+</html>
