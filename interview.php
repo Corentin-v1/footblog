@@ -10,7 +10,7 @@ if (file_exists($articles_file)) {
         $parts = explode('|', $line, 4);
         $articles[] = [
             'title' => $parts[0] ?? '',
-            'content' => isset($parts[1]) ? base64_decode($parts[1]) : '',
+            'content' => $parts[1] ?? '',
             'image' => $parts[2] ?? '',
             'date' => $parts[3] ?? ''
         ];
@@ -38,7 +38,7 @@ if (is_logged_in() && isset($_POST['add_article'])) {
         }
     }
     $date = date('Y-m-d H:i:s');
-    file_put_contents($articles_file, $title . '|' . base64_encode($content) . '|' . $image_name . '|' . $date . PHP_EOL, FILE_APPEND);
+    file_put_contents($articles_file, $title . '|' . $content . '|' . $image_name . '|' . $date . PHP_EOL, FILE_APPEND);
     header('Location: interview.php');
     exit;
 }
@@ -76,7 +76,12 @@ if (is_logged_in() && isset($_POST['edit_article'])) {
                 move_uploaded_file($_FILES['image']['tmp_name'], $upload_dir . $image_name);
             }
         }
-        $articles[$idx] = ['title' => $title, 'content' => base64_encode($content), 'image' => $image_name, 'date' => $date];
+        $articles[$idx] = [
+            'title' => $title,
+            'content' => $content,
+            'image' => $image_name,
+            'date' => $date
+        ];
         $lines = [];
         foreach ($articles as $a) {
             $lines[] = $a['title'] . '|' . $a['content'] . '|' . ($a['image'] ?? '') . '|' . ($a['date'] ?? '');
@@ -113,18 +118,30 @@ if (is_logged_in() && isset($_POST['edit_article'])) {
         <?php endif; ?>
         <?php foreach ($articles as $i => $a): ?>
           <?php
-            $show_content = (isset($_GET['show']) && $_GET['show'] === $a['date']);
             $article_id = 'article_' . md5($a['date']);
           ?>
-          <article id="<?php echo $article_id; ?>" class="toggle-article" onclick="toggleContent(this)">
-            <h3><?php echo htmlspecialchars($a['title']); ?></h3>
-            <?php if (!empty($a['image']) && file_exists($upload_dir . $a['image'])): ?>
-              <img src="<?php echo $upload_dir . htmlspecialchars($a['image']); ?>" alt="Photo">
+          <article id="<?php echo $article_id; ?>" class="toggle-article">
+            <?php if (is_logged_in()): ?>
+              <form method="post" enctype="multipart/form-data">
+                <input type="hidden" name="edit_article" value="<?php echo $i; ?>">
+                <input type="text" name="title" value="<?php echo htmlspecialchars($a['title']); ?>" required style="width:100%;padding:8px;margin-bottom:8px;">
+                <?php if (!empty($a['image']) && file_exists($upload_dir . $a['image'])): ?>
+                  <img src="<?php echo $upload_dir . htmlspecialchars($a['image']); ?>" alt="Photo" style="max-width:600px;max-height:500px;margin-bottom:8px;">
+                <?php endif; ?>
+                <input type="file" name="image" accept="image/*" style="margin-bottom:8px;">
+                <textarea name="content" required style="width:100%;padding:8px;margin-bottom:8px;"><?php echo htmlspecialchars($a['content']); ?></textarea>
+                <button type="submit" style="padding:8px 16px;">Enregistrer</button>
+              </form>
+            <?php else: ?>
+              <h3><?php echo htmlspecialchars($a['title']); ?></h3>
+              <?php if (!empty($a['image']) && file_exists($upload_dir . $a['image'])): ?>
+                <img src="<?php echo $upload_dir . htmlspecialchars($a['image']); ?>" alt="Photo">
+              <?php endif; ?>
+              <small>Publié le : <?php echo htmlspecialchars($a['date']); ?></small>
+              <div class="article-content">
+                <p><?php echo nl2br(htmlspecialchars($a['content'])); ?></p>
+              </div>
             <?php endif; ?>
-            <small>Publié le : <?php echo htmlspecialchars($a['date']); ?></small>
-            <div class="article-content">
-              <p><?php echo nl2br(htmlspecialchars(base64_decode($a['content']))); ?></p>
-            </div>
           </article>
         <?php endforeach; ?>
       </section>
