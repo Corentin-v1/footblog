@@ -66,13 +66,13 @@ if (is_logged_in() && isset($_POST['delete_article'])) {
     }
 }
 
-// Modifier un article (préserver la date)
+// Modifier un article (mise à jour de la date)
 if (is_logged_in() && isset($_POST['edit_article'])) {
     $idx = intval($_POST['edit_article']);
     $title = trim($_POST['title'] ?? '');
     $content = trim($_POST['content'] ?? '');
     $image_name = $articles[$idx]['image'] ?? '';
-    $date = $articles[$idx]['date'] ?? date('Y-m-d H:i:s');
+    $date = date('Y-m-d H:i:s'); // Mise à jour de la date avec la date et l'heure actuelles
     if (isset($articles[$idx]) && $title && $content) {
         if (!empty($_FILES['photo']['name'])) {
             if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
@@ -94,7 +94,7 @@ if (is_logged_in() && isset($_POST['edit_article'])) {
             'title' => $title,
             'content' => $content, // Suppression de l'encodage Base64
             'image' => $image_name,
-            'date' => $date
+            'date' => $date // Mise à jour de la date
         ];
         $lines = [];
         foreach ($articles as $a) {

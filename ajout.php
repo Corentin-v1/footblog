@@ -172,15 +172,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_article'])) {
     <title>Ajouter un article</title>
     <link rel="stylesheet" href="style.php">
 </head>
-<body>
+<body class="<?php echo isset($_COOKIE['dark_mode']) && $_COOKIE['dark_mode'] === '1' ? 'dark-mode' : ''; ?>">
 <?php include 'header.php'; ?>
 <div class="container">
     <?php include 'sidebar.php'; ?>
     <main class="content">
-        <div style="max-width:700px;margin:40px auto;padding:30px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.1);border-radius:8px;">
+        <div class="form-container" style="max-width:700px;margin:40px auto;padding:30px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.1);border-radius:8px;">
             <h2>Ajouter un article</h2>
             <?php if ($msg): ?>
-                <div style="margin-bottom:15px;color:<?= strpos($msg, 'succès')!==false || strpos($msg, 'modifié')!==false ? 'green':'red' ?>;"><?php echo $msg; ?></div>
+                <div class="<?php echo strpos($msg, 'succès') !== false || strpos($msg, 'modifié') !== false ? 'msg-success' : 'msg-error'; ?>" style="margin-bottom:15px;">
+                    <?php echo $msg; ?>
+                </div>
             <?php endif; ?>
             <?php if ($edit_idx !== null && $edit_page !== null): ?>
                 <!-- Formulaire édition -->
@@ -208,7 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_article'])) {
                 </form>
             <?php else: ?>
                 <!-- Formulaire ajout -->
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data" class="form-container">
                     <input type="hidden" name="add_article" value="1">
                     <label>Titre<br>
                         <input type="text" name="title" required style="width:100%;padding:8px;margin-bottom:10px;">
@@ -270,7 +272,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_article'])) {
                 <?php else: ?>
                     <div style="display:block;">
                     <?php foreach ($articles as $i => $a): ?>
-                        <article style="background:#fff;padding:15px;margin-bottom:15px;box-shadow:0 2px 4px rgba(0,0,0,0.07);border-radius:6px;">
+                        <article class="ajout-article">
                             <h4><?php echo htmlspecialchars($a['title']); ?></h4>
                             <?php if (!empty($a['image']) && file_exists($upload_dir . $a['image'])): ?>
                                 <img src="<?php echo $upload_dir . htmlspecialchars($a['image']); ?>" alt="Photo" style="max-width:600px;max-height:400px;display:block;margin-bottom:8px;">

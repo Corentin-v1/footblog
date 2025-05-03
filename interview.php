@@ -58,7 +58,7 @@ if (is_logged_in() && isset($_POST['edit_article'])) {
     $title = trim($_POST['title'] ?? '');
     $content = trim($_POST['content'] ?? '');
     $image_name = $articles[$idx]['image'] ?? '';
-    $date = $articles[$idx]['date'] ?? date('Y-m-d H:i:s');
+    $date = date('Y-m-d H:i:s'); // Update the date to the current date and time
     if (isset($articles[$idx]) && $title && $content) {
         if (!empty($_FILES['image']['name'])) {
             if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
@@ -80,7 +80,7 @@ if (is_logged_in() && isset($_POST['edit_article'])) {
             'title' => $title,
             'content' => $content,
             'image' => $image_name,
-            'date' => $date
+            'date' => $date // Update the date
         ];
         $lines = [];
         foreach ($articles as $a) {

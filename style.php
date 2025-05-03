@@ -206,6 +206,30 @@ article img {
     filter: brightness(1) contrast(1);
 }
 
+/* Articles in ajout.php */
+.ajout-article {
+    background: #000; /* Black background */
+    color: #e0e0e0; /* Light text for readability */
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+    transition: background 0.3s, color 0.3s;
+}
+.ajout-article h4 {
+    color: #fff; /* White for titles */
+}
+.ajout-article p {
+    color: #e0e0e0; /* Light text */
+}
+.ajout-article img {
+    max-width: 600px;
+    max-height: 400px;
+    display: block;
+    margin-bottom: 8px;
+    filter: brightness(0.9) contrast(1.1);
+}
+
 h1, h2, h3, h4, h5, h6 {
     font-family: Arial, sans-serif;
     color: #000; /* Black in light mode */
@@ -430,4 +454,57 @@ body.dark-mode h2 {
 }
 body.dark-mode .sidebar nav ul li a {
     color: #fff !important; /* White in dark mode */
+}
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select,
+body.dark-mode button {
+    background: #2c2f33 !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #444 !important;
+}
+body.dark-mode input::placeholder, 
+body.dark-mode textarea::placeholder {
+    color: #888 !important;
+}
+body.dark-mode a {
+    color: #7abaff !important;
+}
+body.dark-mode a:hover {
+    color: #1DA1F2 !important;
+}
+body.dark-mode .msg-success {
+    color: #4caf50 !important;
+}
+body.dark-mode .msg-error {
+    color: #f44336 !important;
+}
+
+/* Dark mode for ajout.php articles */
+body.dark-mode .ajout-article {
+    background: #181a1b !important; /* Darker background for dark mode */
+    color: #e0e0e0 !important; /* Light text for readability */
+}
+body.dark-mode .ajout-article h4 {
+    color: #fff !important; /* White for titles in dark mode */
+}
+body.dark-mode .ajout-article p {
+    color: #e0e0e0 !important; /* Light text in dark mode */
+}
+
+/* Form container for ajout.php */
+.form-container {
+    background: #fff; /* Default white background */
+    color: #222; /* Default text color */
+    padding: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* Dark mode for form container */
+body.dark-mode .form-container {
+    background: #181a1b !important; /* Black background for dark mode */
+    color: #e0e0e0 !important; /* Light text for readability */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
