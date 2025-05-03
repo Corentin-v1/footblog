@@ -8,12 +8,14 @@ $articles = [];
 if (file_exists($articles_file)) {
     $lines = file($articles_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
-        $parts = explode('|', $line, 4);
+        $parts = explode('|', $line, 6);
         $articles[] = [
             'title' => $parts[0] ?? '',
             'content' => $parts[1] ?? '', 
             'image' => $parts[2] ?? '',
-            'date' => $parts[3] ?? ''
+            'date' => !empty($parts[3]) ? $parts[3] : null, // Ensure date is null if empty
+            'likes' => $parts[4] ?? 0,
+            'dislikes' => $parts[5] ?? 0
         ];
     }
     // Trier par date décroissante (plus récent en haut)
@@ -41,8 +43,11 @@ if (is_logged_in() && isset($_POST['add_article'])) {
                 move_uploaded_file($_FILES['photo']['tmp_name'], $upload_dir . $image_name);
             }
         }
+        // Initialize counters for likes and dislikes
+        $likes = 0;
+        $dislikes = 0;
         $date = date('Y-m-d H:i:s');
-        file_put_contents($articles_file, $title . '|' . $content . '|' . $image_name . '|' . $date . PHP_EOL, FILE_APPEND); // Suppression de l'encodage Base64
+        file_put_contents($articles_file, $title . '|' . $content . '|' . $image_name . '|' . $date . '|' . $likes . '|' . $dislikes . PHP_EOL, FILE_APPEND); // Suppression de l'encodage Base64
         header('Location: apres-match.php');
         exit;
     }
@@ -90,11 +95,16 @@ if (is_logged_in() && isset($_POST['edit_article'])) {
                 move_uploaded_file($_FILES['photo']['tmp_name'], $upload_dir . $image_name);
             }
         }
+        // Preserve existing counters
+        $likes = isset($articles[$idx]['likes']) ? $articles[$idx]['likes'] : 0;
+        $dislikes = isset($articles[$idx]['dislikes']) ? $articles[$idx]['dislikes'] : 0;
         $articles[$idx] = [
             'title' => $title,
             'content' => $content,
             'image' => $image_name,
-            'date' => $date // Update the date
+            'date' => $date, // Update the date
+            'likes' => $likes,
+            'dislikes' => $dislikes
         ];
         $lines = [];
         foreach ($articles as $a) {
@@ -184,7 +194,7 @@ function getArticleCounts($article_id) {
               <?php if (!empty($a['image']) && file_exists($upload_dir . $a['image'])): ?>
                 <img src="<?php echo $upload_dir . htmlspecialchars($a['image']); ?>" alt="Photo">
               <?php endif; ?>
-              <small>Publié le : <?php echo htmlspecialchars($a['date']); ?></small>
+              <small>Publié le : <?php echo $a['date'] ? date('d/m/Y H:i', strtotime($a['date'])) : 'Date inconnue'; ?></small>
               <div class="article-content">
                 <p><?php echo nl2br(htmlspecialchars($a['content'])); ?></p> 
               </div>

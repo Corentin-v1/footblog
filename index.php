@@ -18,13 +18,13 @@ foreach ($article_files as $file) {
     if (file_exists($file)) {
         $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         foreach ($lines as $line) {
-            $parts = explode('|', $line, 4);
+            $parts = explode('|', $line, 6);
             $articles[] = [
                 'title' => $parts[0] ?? '',
                 // Décoder le contenu base64 si présent
                 'content' => isset($parts[1]) ? base64_decode($parts[1]) : '',
                 'image' => $parts[2] ?? '',
-                'date' => $parts[3] ?? '',
+                'date' => !empty($parts[3]) ? $parts[3] : null, // Ensure date is null if empty
                 'source_file' => $file
             ];
         }
@@ -103,6 +103,8 @@ if (is_logged_in() && isset($_GET['edit'])) {
                 <h3 style="font-size:2.1em;margin-bottom:10px;"><?php echo htmlspecialchars($main_article['title']); ?></h3>
                 <?php if (!empty($main_article['date'])): ?>
                   <div style="font-size:1.1em;margin-bottom:0;">Publié le <?php echo date('d/m/Y H:i', strtotime($main_article['date'])); ?></div>
+                <?php else: ?>
+                  <div style="font-size:1.1em;margin-bottom:0;">Date inconnue</div>
                 <?php endif; ?>
                 <div class="article-content" style="display:none;">
                   <?php echo htmlspecialchars($main_article['content']); ?>
@@ -125,6 +127,8 @@ if (is_logged_in() && isset($_GET['edit'])) {
                     <h4 style="font-size:1.25em;margin-bottom:8px;"><?php echo htmlspecialchars($a['title']); ?></h4>
                     <?php if (!empty($a['date'])): ?>
                       <div style="font-size:0.98em;">Publié le <?php echo date('d/m/Y H:i', strtotime($a['date'])); ?></div>
+                    <?php else: ?>
+                      <div style="font-size:0.98em;">Date inconnue</div>
                     <?php endif; ?>
                     <div class="article-content" style="display:none;">
                       <?php echo htmlspecialchars($a['content']); ?>

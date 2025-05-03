@@ -4,16 +4,18 @@ $articles_file = 'articles_autre.txt';
 $upload_dir = 'uploads/';
 $articles = [];
 
-// Charger les articles (4 champs : titre|contenu|image|date)
+// Charger les articles (6 champs : titre|contenu|image|date|likes|dislikes)
 if (file_exists($articles_file)) {
     $lines = file($articles_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
-        $parts = explode('|', $line, 4);
+        $parts = explode('|', $line, 6);
         $articles[] = [
             'title' => $parts[0] ?? '',
             'content' => $parts[1] ?? '', // Suppression du décodage Base64
             'image' => $parts[2] ?? '',
-            'date' => $parts[3] ?? ''
+            'date' => $parts[3] ?? '',
+            'likes' => $parts[4] ?? 0,
+            'dislikes' => $parts[5] ?? 0
         ];
     }
     // Trier par date décroissante (plus récent en haut)
@@ -41,8 +43,10 @@ if (is_logged_in() && isset($_POST['add_article'])) {
                 move_uploaded_file($_FILES['photo']['tmp_name'], $upload_dir . $image_name);
             }
         }
+        $likes = 0;
+        $dislikes = 0;
         $date = date('Y-m-d H:i:s');
-        file_put_contents($articles_file, $title . '|' . $content . '|' . $image_name . '|' . $date . PHP_EOL, FILE_APPEND); // Suppression de l'encodage Base64
+        file_put_contents($articles_file, $title . '|' . $content . '|' . $image_name . '|' . $date . '|' . $likes . '|' . $dislikes . PHP_EOL, FILE_APPEND); // Suppression de l'encodage Base64
         header('Location: autre.php');
         exit;
     }
@@ -58,7 +62,7 @@ if (is_logged_in() && isset($_POST['delete_article'])) {
         unset($articles[$idx]);
         $lines = [];
         foreach ($articles as $a) {
-            $lines[] = $a['title'] . '|' . $a['content'] . '|' . ($a['image'] ?? '') . '|' . ($a['date'] ?? '');
+            $lines[] = $a['title'] . '|' . $a['content'] . '|' . ($a['image'] ?? '') . '|' . ($a['date'] ?? '') . '|' . ($a['likes'] ?? 0) . '|' . ($a['dislikes'] ?? 0);
         }
         file_put_contents($articles_file, implode(PHP_EOL, $lines) . PHP_EOL);
         header('Location: autre.php');
@@ -90,10 +94,12 @@ if (is_logged_in() && isset($_POST['edit_article'])) {
                 move_uploaded_file($_FILES['photo']['tmp_name'], $upload_dir . $image_name);
             }
         }
-        $articles[$idx] = ['title' => $title, 'content' => $content, 'image' => $image_name, 'date' => $date]; // Update the date
+        $likes = isset($articles[$idx]['likes']) ? $articles[$idx]['likes'] : 0;
+        $dislikes = isset($articles[$idx]['dislikes']) ? $articles[$idx]['dislikes'] : 0;
+        $articles[$idx] = ['title' => $title, 'content' => $content, 'image' => $image_name, 'date' => $date, 'likes' => $likes, 'dislikes' => $dislikes]; // Update the date
         $lines = [];
         foreach ($articles as $a) {
-            $lines[] = $a['title'] . '|' . $a['content'] . '|' . ($a['image'] ?? '') . '|' . ($a['date'] ?? '');
+            $lines[] = $a['title'] . '|' . $a['content'] . '|' . ($a['image'] ?? '') . '|' . ($a['date'] ?? '') . '|' . ($a['likes'] ?? 0) . '|' . ($a['dislikes'] ?? 0);
         }
         file_put_contents($articles_file, implode(PHP_EOL, $lines) . PHP_EOL);
         header('Location: autre.php');
@@ -180,7 +186,7 @@ function getArticleCounts($article_id) {
               <?php if (!empty($a['image']) && file_exists($upload_dir . $a['image'])): ?>
                 <img src="<?php echo $upload_dir . htmlspecialchars($a['image']); ?>" alt="Photo">
               <?php endif; ?>
-              <small>Publié le : <?php echo htmlspecialchars($a['date']); ?></small>
+              <small>Publié le : <?php echo date('d/m/Y H:i', strtotime($a['date'])); ?></small>
               <div class="article-content">
                 <p><?php echo nl2br(htmlspecialchars($a['content'])); ?></p> 
               </div>

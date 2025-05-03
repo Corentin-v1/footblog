@@ -21,9 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 foreach ($lines as &$line) {
                     $parts = explode('|', $line);
                     if (isset($parts[3]) && md5($parts[3]) === $article_id) {
-                        // Update likes or dislikes
-                        $parts[4] = isset($parts[4]) ? intval($parts[4]) : 0;
-                        $parts[5] = isset($parts[5]) ? intval($parts[5]) : 0;
+                        // Ensure counters exist
+                        $parts[4] = isset($parts[4]) ? intval($parts[4]) : 0; // Likes
+                        $parts[5] = isset($parts[5]) ? intval($parts[5]) : 0; // Dislikes
 
                         if ($action === 'like') {
                             $parts[4]++;
