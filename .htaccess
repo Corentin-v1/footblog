@@ -1,8 +1,3 @@
-<Files "counts">
-    Order Allow,Deny
-    Deny from all
-</Files>
-
 <Files "conn.log">
     Order Allow,Deny
     Deny from all

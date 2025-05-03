@@ -172,10 +172,11 @@ function getArticleCounts($article_id) {
         <?php endif; ?>
         <?php foreach ($articles as $i => $a): ?>
           <?php
-            $article_id = 'article_' . md5($a['date']);
-            $counts = getArticleCounts($article_id);
+            $article_id = md5($a['date']);
+            $likes = isset($a['likes']) ? $a['likes'] : 0;
+            $dislikes = isset($a['dislikes']) ? $a['dislikes'] : 0;
           ?>
-          <article id="<?php echo $article_id; ?>" class="toggle-article">
+          <article id="article_<?php echo $article_id; ?>" class="toggle-article">
             <?php if (is_logged_in()): ?>
               <form method="post" enctype="multipart/form-data">
                 <input type="hidden" name="edit_article" value="<?php echo $i; ?>">
@@ -199,9 +200,9 @@ function getArticleCounts($article_id) {
             <?php endif; ?>
             <div class="like-dislike-container">
               <button class="like-btn" onclick="handleLike('<?php echo $article_id; ?>', event)">👍</button>
-              <span id="like-count-<?php echo $article_id; ?>"><?php echo $counts['likes']; ?></span>
+              <span id="like-count-<?php echo $article_id; ?>"><?php echo $likes; ?></span>
               <button class="dislike-btn" onclick="handleDislike('<?php echo $article_id; ?>', event)">👎</button>
-              <span id="dislike-count-<?php echo $article_id; ?>"><?php echo $counts['dislikes']; ?></span>
+              <span id="dislike-count-<?php echo $article_id; ?>"><?php echo $dislikes; ?></span>
             </div>
           </article>
         <?php endforeach; ?>
@@ -244,33 +245,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
 const userVotes = {};
 
+async function updateCounts(articleId, action) {
+  const previousAction = userVotes[articleId] || null;
+  const response = await fetch('update_counts.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ articleId, action, previousAction })
+  });
+  const data = await response.json();
+  if (data.success) {
+    document.getElementById(`like-count-${articleId}`).textContent = data.likes;
+    document.getElementById(`dislike-count-${articleId}`).textContent = data.dislikes;
+    userVotes[articleId] = action; // Update the user's vote
+  }
+}
+
 function handleLike(articleId, event) {
   event.stopPropagation();
-  if (userVotes[articleId] === 'like') return;
-
-  const likeCount = document.getElementById(`like-count-${articleId}`);
-  const dislikeCount = document.getElementById(`dislike-count-${articleId}`);
-
-  if (userVotes[articleId] === 'dislike') {
-    dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
-  }
-
-  likeCount.textContent = parseInt(likeCount.textContent) + 1;
-  userVotes[articleId] = 'like';
+  const currentVote = userVotes[articleId];
+  if (currentVote === 'like') return; // Prevent duplicate likes
+  updateCounts(articleId, 'like');
 }
 
 function handleDislike(articleId, event) {
   event.stopPropagation();
-  if (userVotes[articleId] === 'dislike') return;
-
-  const likeCount = document.getElementById(`like-count-${articleId}`);
-  const dislikeCount = document.getElementById(`dislike-count-${articleId}`);
-
-  if (userVotes[articleId] === 'like') {
-    likeCount.textContent = parseInt(likeCount.textContent) - 1;
-  }
-
-  dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
-  userVotes[articleId] = 'dislike';
+  const currentVote = userVotes[articleId];
+  if (currentVote === 'dislike') return; // Prevent duplicate dislikes
+  updateCounts(articleId, 'dislike');
 }
 </script>

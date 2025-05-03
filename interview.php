@@ -13,8 +13,8 @@ if (file_exists($articles_file)) {
             'content' => $parts[1] ?? '',
             'image' => $parts[2] ?? '',
             'date' => $parts[3] ?? '',
-            'likes' => $parts[4] ?? 0,
-            'dislikes' => $parts[5] ?? 0
+            'likes' => isset($parts[4]) ? (int)$parts[4] : 0,
+            'dislikes' => isset($parts[5]) ? (int)$parts[5] : 0
         ];
     }
     // Trier par date décroissante (plus récent en haut)
@@ -142,10 +142,11 @@ function saveArticleCounts($article_id, $counts) {
         <?php endif; ?>
         <?php foreach ($articles as $i => $a): ?>
           <?php
-            $article_id = 'article_' . md5($a['date']);
-            $counts = getArticleCounts($article_id);
+            $article_id = md5($a['date']);
+            $likes = isset($a['likes']) ? $a['likes'] : 0;
+            $dislikes = isset($a['dislikes']) ? $a['dislikes'] : 0;
           ?>
-          <article id="<?php echo $article_id; ?>" class="toggle-article">
+          <article id="article_<?php echo $article_id; ?>" class="toggle-article">
             <?php if (is_logged_in()): ?>
               <form method="post" enctype="multipart/form-data">
                 <input type="hidden" name="edit_article" value="<?php echo $i; ?>">
@@ -159,7 +160,7 @@ function saveArticleCounts($article_id, $counts) {
               </form>
             <?php else: ?>
               <h3><?php echo htmlspecialchars($a['title']); ?></h3>
-              <?php if (!empty($a['image']) && file_exists($upload_dir . $a['image'])): ?>
+              <?php if (!empty($a['image']) && file_exists($upload_dir . htmlspecialchars($a['image']))): ?>
                 <img src="<?php echo $upload_dir . htmlspecialchars($a['image']); ?>" alt="Photo">
               <?php endif; ?>
               <small>Publié le : <?php echo date('d/m/Y H:i', strtotime($a['date'])); ?></small>
@@ -169,9 +170,9 @@ function saveArticleCounts($article_id, $counts) {
             <?php endif; ?>
             <div class="like-dislike-container">
               <button class="like-btn" onclick="handleLike('<?php echo $article_id; ?>', event)">👍</button>
-              <span id="like-count-<?php echo $article_id; ?>"><?php echo $counts['likes']; ?></span>
+              <span id="like-count-<?php echo $article_id; ?>"><?php echo $likes; ?></span>
               <button class="dislike-btn" onclick="handleDislike('<?php echo $article_id; ?>', event)">👎</button>
-              <span id="dislike-count-<?php echo $article_id; ?>"><?php echo $counts['dislikes']; ?></span>
+              <span id="dislike-count-<?php echo $article_id; ?>"><?php echo $dislikes; ?></span>
             </div>
           </article>
         <?php endforeach; ?>
@@ -184,25 +185,31 @@ function saveArticleCounts($article_id, $counts) {
 const userVotes = {};
 
 async function updateCounts(articleId, action) {
+  const previousAction = userVotes[articleId] || null;
   const response = await fetch('update_counts.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ articleId, action })
+    body: JSON.stringify({ articleId, action, previousAction })
   });
   const data = await response.json();
   if (data.success) {
     document.getElementById(`like-count-${articleId}`).textContent = data.likes;
     document.getElementById(`dislike-count-${articleId}`).textContent = data.dislikes;
+    userVotes[articleId] = action; // Update the user's vote
   }
 }
 
 function handleLike(articleId, event) {
   event.stopPropagation();
+  const currentVote = userVotes[articleId];
+  if (currentVote === 'like') return; // Prevent duplicate likes
   updateCounts(articleId, 'like');
 }
 
 function handleDislike(articleId, event) {
   event.stopPropagation();
+  const currentVote = userVotes[articleId];
+  if (currentVote === 'dislike') return; // Prevent duplicate dislikes
   updateCounts(articleId, 'dislike');
 }
 
