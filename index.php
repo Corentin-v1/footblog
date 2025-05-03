@@ -63,13 +63,15 @@ if (is_logged_in() && isset($_GET['edit'])) {
       <!-- Bloc de présentation -->
       <section style="margin-bottom:32px;max-width:800px;margin-left:auto;margin-right:auto;text-align:left;">
         <h2 style="font-size:2em;margin-bottom:12px;margin-left:-200px;">Présentation</h2>
-        <div style="font-size:1.1em;line-height:1.7;margin-left:-200px;">
-          Bonjour, à tous, je m'appelle Paulo, j'ai 19 ans j'ai créé ce blog avec un ami afin de partager mes passions : l'écriture et le sport.
-          Vous retrouverez dans ce blog, des articles d'après matchs, ainsi que mes interviews réalisées pour « NationalFootball » ou pour d'autres médias.
-          Ainsi que des articles rédigés dans la presse papier et/ou numérique. 
-        </div>
-        <div style="font-size:1.1em;line-height:1.7;margin-left:-200px;">Bonne lecture !</div>
-
+        <div style="font-size:1.1em;line-height:1.7;margin-left:-200px;">Bonjour à tous </div>
+        <div style="height: 20px;"></div>
+        <div style="font-size:1.1em;line-height:1.7;margin-left:-200px;">Ce blog a été créé par deux étudiants se passionnant pour l’informatique, l’écriture journalistique et le sport. Ce site est avant tout un prolongement du travail que vous pouvez retrouver sur mes différents comptes Twitter, ainsi que sur le média « NationalFootball » et sur la filiale « NF Bourgogne-Franche-Comté ».</div>
+        <div style="height: 20px;"></div>
+        <div style="font-size:1.1em;line-height:1.7;margin-left:-200px;">Ce site va me permettre de m’exprimer davantage sur ma région natale, grâce à des interviews avec des acteurs du milieu footballistique régional. Mais également grâce à l’obtention d’accréditations, aux publications d’articles, mais aussi des suivis des différents clubs du niveau national et régional.</div>
+        <div style="height: 20px;"></div>
+        <div style="font-size:1.1em;line-height:1.7;margin-left:-200px;">J’aimerai dans les années à venir devenir journaliste sportif et ce rêve passe par ce blog et par vos différents retours sur mes différents réseaux sociaux (notamment Twitter).</div>
+        <div style="height: 20px;"></div>
+        <div style="font-size:1.1em;line-height:1.7;margin-left:-200px;">Bonne lecture à tous !</div>
       </section>
       <!-- Gestion des articles -->
       <section class="other-articles" style="display:block;margin-bottom:20px;">
@@ -94,7 +96,7 @@ if (is_logged_in() && isset($_GET['edit'])) {
                 $main_link = get_article_page($main_article['source_file']) . '?show=' . urlencode($main_article['date']);
               ?>
               <a href="<?php echo $main_link; ?>" style="text-decoration:none;color:inherit;">
-              <div class="article" style="background:#fff;color:#222;padding:32px 32px 24px 32px;margin-bottom:36px;box-shadow:0 4px 16px rgba(0,0,0,0.13);border-radius:14px;text-align:left;cursor:pointer;width:100%;margin-left:0;">
+              <div class="article toggleable" style="background:#fff;color:#222;padding:32px 32px 24px 32px;margin-bottom:36px;box-shadow:0 4px 16px rgba(0,0,0,0.13);border-radius:14px;text-align:left;cursor:pointer;width:100%;margin-left:0;">
                 <?php if (!empty($main_article['image']) && file_exists($upload_dir . $main_article['image'])): ?>
                   <img src="<?php echo $upload_dir . htmlspecialchars($main_article['image']); ?>" alt="Photo" style="width:100%;max-width:700px;max-height:420px;display:block;margin-bottom:22px;border-radius:10px;filter: brightness(1) contrast(1);">
                 <?php endif; ?>
@@ -102,6 +104,9 @@ if (is_logged_in() && isset($_GET['edit'])) {
                 <?php if (!empty($main_article['date'])): ?>
                   <div style="font-size:1.1em;margin-bottom:0;">Publié le <?php echo date('d/m/Y H:i', strtotime($main_article['date'])); ?></div>
                 <?php endif; ?>
+                <div class="article-content" style="display:none;">
+                  <?php echo htmlspecialchars($main_article['content']); ?>
+                </div>
               </div>
               </a>
             </div>
@@ -113,7 +118,7 @@ if (is_logged_in() && isset($_GET['edit'])) {
                     $alink = get_article_page($a['source_file']) . '?show=' . urlencode($a['date']);
                   ?>
                   <a href="<?php echo $alink; ?>" style="text-decoration:none;color:inherit;">
-                  <div class="article" style="background:#fff;color:#222;padding:18px 18px 12px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.10);border-radius:10px;max-width:320px;width:100%;text-align:left;cursor:pointer;min-height:220px;margin-bottom:0;">
+                  <div class="article toggleable" style="background:#fff;color:#222;padding:18px 18px 12px 18px;box-shadow:0 2px 8px rgba(0,0,0,0.10);border-radius:10px;max-width:320px;width:100%;text-align:left;cursor:pointer;min-height:220px;margin-bottom:0;">
                     <?php if (!empty($a['image']) && file_exists($upload_dir . $a['image'])): ?>
                       <img src="<?php echo $upload_dir . htmlspecialchars($a['image']); ?>" alt="Photo" style="width:100%;max-width:280px;max-height:160px;display:block;margin-bottom:12px;border-radius:7px;filter: brightness(1) contrast(1);">
                     <?php endif; ?>
@@ -121,6 +126,9 @@ if (is_logged_in() && isset($_GET['edit'])) {
                     <?php if (!empty($a['date'])): ?>
                       <div style="font-size:0.98em;">Publié le <?php echo date('d/m/Y H:i', strtotime($a['date'])); ?></div>
                     <?php endif; ?>
+                    <div class="article-content" style="display:none;">
+                      <?php echo htmlspecialchars($a['content']); ?>
+                    </div>
                   </div>
                   </a>
                 <?php endforeach; ?>
@@ -134,5 +142,17 @@ if (is_logged_in() && isset($_GET['edit'])) {
       </footer>
     </main>
   </div>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('article').forEach(function(article) {
+      article.addEventListener('click', function(event) {
+        var content = article.querySelector('.article-content');
+        if (content) {
+          content.style.display = content.style.display === 'block' ? 'none' : 'block';
+        }
+      });
+    });
+  });
+  </script>
 </body>
 </html>

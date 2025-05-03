@@ -112,6 +112,14 @@ if (is_logged_in() && isset($_GET['edit']) && isset($articles[intval($_GET['edit
     $edit_content = $articles[$edit_idx]['content'];
     $edit_image = $articles[$edit_idx]['image'];
 }
+
+function getArticleCounts($article_id) {
+    $file = "counts/{$article_id}.json";
+    if (file_exists($file)) {
+        return json_decode(file_get_contents($file), true);
+    }
+    return ['likes' => 0, 'dislikes' => 0];
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -153,6 +161,7 @@ if (is_logged_in() && isset($_GET['edit']) && isset($articles[intval($_GET['edit
         <?php foreach ($articles as $i => $a): ?>
           <?php
             $article_id = 'article_' . md5($a['date']);
+            $counts = getArticleCounts($article_id);
           ?>
           <article id="<?php echo $article_id; ?>" class="toggle-article">
             <?php if (is_logged_in()): ?>
@@ -176,6 +185,12 @@ if (is_logged_in() && isset($_GET['edit']) && isset($articles[intval($_GET['edit
                 <p><?php echo nl2br(htmlspecialchars($a['content'])); ?></p> 
               </div>
             <?php endif; ?>
+            <div class="like-dislike-container">
+              <button class="like-btn" onclick="handleLike('<?php echo $article_id; ?>', event)">👍</button>
+              <span id="like-count-<?php echo $article_id; ?>"><?php echo $counts['likes']; ?></span>
+              <button class="dislike-btn" onclick="handleDislike('<?php echo $article_id; ?>', event)">👎</button>
+              <span id="dislike-count-<?php echo $article_id; ?>"><?php echo $counts['dislikes']; ?></span>
+            </div>
           </article>
         <?php endforeach; ?>
       </section>
@@ -184,12 +199,56 @@ if (is_logged_in() && isset($_GET['edit']) && isset($articles[intval($_GET['edit
 </body>
 </html>
 <script>
+const userVotes = {};
+
 function toggleContent(article) {
   var content = article.querySelector('.article-content');
   if (content) {
     content.style.display = (content.style.display === 'none' || content.style.display === '') ? 'block' : 'none';
   }
 }
+
+function handleLike(articleId, event) {
+  event.stopPropagation();
+  if (userVotes[articleId] === 'like') return;
+
+  const likeCount = document.getElementById(`like-count-${articleId}`);
+  const dislikeCount = document.getElementById(`dislike-count-${articleId}`);
+
+  if (userVotes[articleId] === 'dislike') {
+    dislikeCount.textContent = parseInt(dislikeCount.textContent) - 1;
+  }
+
+  likeCount.textContent = parseInt(likeCount.textContent) + 1;
+  userVotes[articleId] = 'like';
+}
+
+function handleDislike(articleId, event) {
+  event.stopPropagation();
+  if (userVotes[articleId] === 'dislike') return;
+
+  const likeCount = document.getElementById(`like-count-${articleId}`);
+  const dislikeCount = document.getElementById(`dislike-count-${articleId}`);
+
+  if (userVotes[articleId] === 'like') {
+    likeCount.textContent = parseInt(likeCount.textContent) - 1;
+  }
+
+  dislikeCount.textContent = parseInt(dislikeCount.textContent) + 1;
+  userVotes[articleId] = 'dislike';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('article').forEach(function(article) {
+    article.addEventListener('click', function(event) {
+      if (event.target.classList.contains('like-btn') || event.target.classList.contains('dislike-btn')) {
+        return;
+      }
+      toggleContent(article);
+    });
+  });
+});
+
 // Ajout : scroll automatique sur l'article si ?show= est présent
 <?php if (isset($_GET['show'])): ?>
 window.addEventListener('DOMContentLoaded', function() {

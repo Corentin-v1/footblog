@@ -244,6 +244,11 @@ textarea, input, select, button {
 
 .article-content {
     display: none; /* Masquer le contenu par défaut */
+    margin-top: 10px;
+}
+
+article.toggleable {
+    cursor: pointer;
 }
 
 @media (max-width: 900px) {
@@ -507,4 +512,33 @@ body.dark-mode .form-container {
     background: #181a1b !important; /* Black background for dark mode */
     color: #e0e0e0 !important; /* Light text for readability */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.like-dislike-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+.like-btn, .dislike-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background 0.3s, color 0.3s;
+}
+.like-btn {
+    background: #4caf50;
+    color: white;
+}
+.like-btn:hover {
+    background: #45a049;
+}
+.dislike-btn {
+    background: #f44336;
+    color: white;
+}
+.dislike-btn:hover {
+    background: #e53935;
 }
