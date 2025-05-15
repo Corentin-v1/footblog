@@ -123,6 +123,22 @@ function saveArticleCounts($article_id, $counts) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Interview</title>
   <link rel="stylesheet" href="style.php">
+  <style>
+  @media (max-width: 700px) {
+    .main-article, .other-articles article {
+      padding: 8px !important;
+      font-size: 0.97em !important;
+    }
+    .other-articles img {
+      max-width: 100vw !important;
+      height: auto !important;
+    }
+    .form-container {
+      padding: 8px !important;
+      max-width: 100vw !important;
+    }
+  }
+  </style>
 </head>
 <body>
   <?php include 'header.php'; ?>

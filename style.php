@@ -287,6 +287,10 @@ article.toggleable {
         font-size: 1em;
         padding: 6px 8px;
     }
+    .form-container {
+        padding: 16px;
+        max-width: 98vw;
+    }
 }
 
 @media (max-width: 600px) {
@@ -310,7 +314,7 @@ article.toggleable {
         max-width: 100vw;
         padding: 0 1vw;
     }
-    img, .main-article img, .other-articles img {
+    img, .main-article img, .other-articles img, .ajout-article img {
         max-width: 100vw !important;
         height: auto !important;
     }
@@ -321,6 +325,23 @@ article.toggleable {
         min-height: 38px;
         font-size: 0.97em;
         padding: 4px 4px;
+    }
+    .form-container {
+        padding: 8px;
+        max-width: 100vw;
+    }
+    .ajout-article {
+        padding: 8px;
+        font-size: 0.97em;
+    }
+    .like-dislike-container {
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
+    }
+    .sidebar-social {
+        position: static !important;
+        margin-top: 20px;
     }
 }
 

@@ -69,5 +69,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit" style="padding:10px 20px;background:rgba(255, 255, 255, 0.3);color:#fff;border:none;border-radius:8px;cursor:pointer;">Se connecter</button>
         </form>
     </div>
+    <style>
+    @media (max-width: 600px) {
+        body {
+            align-items: flex-start !important;
+            padding-top: 30px;
+            height: auto !important;
+        }
+        div[style*="max-width:400px"] {
+            max-width: 98vw !important;
+            padding: 10px !important;
+        }
+    }
+    </style>
 </body>
 </html>

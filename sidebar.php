@@ -1,4 +1,15 @@
 <?php include_once __DIR__ . '/session.php'; ?>
+<?php $upload_dir = 'uploads/'; ?>
+<!-- SUPPRIMER ce bloc CSS qui force la sidebar à être cachée -->
+<!--
+<style>
+@media (max-width: 900px) {
+  #sidebar {
+    transform: translateX(-100vw) !important;
+  }
+}
+</style>
+-->
 <!-- Bouton d'ouverture de la sidebar -->
 <button id="openSidebarBtn" style="position:fixed;top:10px;left:16px;z-index:1200;padding:10px 14px;background:#007BFF;color:#fff;border:none;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.13);">
   ☰
@@ -20,11 +31,11 @@
   <div class="sidebar-social" style="position:absolute;bottom:18px;left:0;width:100%;display:flex;flex-direction:column;align-items:center;gap:10px;">
     <a href="https://www.linkedin.com/in/paulo-scalvinoni-67086a320/" target="_blank" class="sidebar-social-link" style="display:flex;align-items:center;gap:6px;">
       LinkedIn
-      <img src="uploads/linkedin-logo-linkedin-icon-transparent-free-png.webp" alt="LinkedIn" class="sidebar-social-icon" style="width:18px;height:18px;object-fit:contain;">
+      <img src="<?php echo $upload_dir; ?>linkedin-logo-linkedin-icon-transparent-free-png.webp" alt="LinkedIn" class="sidebar-social-icon" style="width:18px;height:18px;object-fit:contain;">
     </a>
     <a href="https://x.com/Cycling701" target="_blank" class="sidebar-social-link" style="display:flex;align-items:center;gap:6px;">
       Twitter
-      <img src="uploads/X-Logo-removebg-preview.png" alt="Twitter" class="sidebar-social-icon" style="width:18px;height:18px;object-fit:contain;">
+      <img src="<?php echo $upload_dir; ?>X-Logo-removebg-preview.png" alt="Twitter" class="sidebar-social-icon" style="width:18px;height:18px;object-fit:contain;">
     </a>
   </div>
 </aside>
@@ -33,21 +44,52 @@ document.addEventListener('DOMContentLoaded', function() {
   var sidebar = document.getElementById('sidebar');
   var openBtn = document.getElementById('openSidebarBtn');
   var closeBtn = document.getElementById('closeSidebarBtn');
+
+  function isMobile() {
+    return window.innerWidth <= 900;
+  }
+
   function openSidebar() {
     sidebar.style.transform = 'translateX(0)';
     openBtn.style.display = 'none';
+    document.body.style.overflow = 'hidden';
   }
   function closeSidebar() {
-    sidebar.style.transform = 'translateX(-220px)';
+    sidebar.style.transform = isMobile() ? 'translateX(-100vw)' : 'translateX(-220px)';
     openBtn.style.display = '';
+    document.body.style.overflow = '';
   }
-  openBtn.addEventListener('click', openSidebar);
-  closeBtn.addEventListener('click', closeSidebar);
-  // Fermer la sidebar si on clique en dehors (optionnel)
+
+  function initSidebar() {
+    if (isMobile()) {
+      sidebar.style.transform = 'translateX(-100vw)';
+      openBtn.style.display = '';
+      document.body.style.overflow = '';
+    } else {
+      sidebar.style.transform = 'translateX(-220px)';
+      openBtn.style.display = '';
+      document.body.style.overflow = '';
+    }
+  }
+  initSidebar();
+
+  openBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    openSidebar();
+  });
+  closeBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    closeSidebar();
+  });
+
   document.addEventListener('click', function(e) {
     if (!sidebar.contains(e.target) && e.target !== openBtn && sidebar.style.transform === 'translateX(0)') {
       closeSidebar();
     }
+  });
+
+  window.addEventListener('resize', function() {
+    initSidebar();
   });
 });
 </script>

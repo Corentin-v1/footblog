@@ -171,6 +171,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_article'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ajouter un article</title>
     <link rel="stylesheet" href="style.php">
+    <style>
+    @media (max-width: 700px) {
+        .form-container {
+            padding: 8px !important;
+            max-width: 100vw !important;
+        }
+        .ajout-article {
+            padding: 8px !important;
+            font-size: 0.97em !important;
+        }
+        .ajout-article img {
+            max-width: 100vw !important;
+            height: auto !important;
+        }
+    }
+    </style>
 </head>
 <body class="<?php echo isset($_COOKIE['dark_mode']) && $_COOKIE['dark_mode'] === '1' ? 'dark-mode' : ''; ?>">
 <?php include 'header.php'; ?>
